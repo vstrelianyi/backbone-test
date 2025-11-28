@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Stack
 
-## Getting Started
+- Next.js 16 (App Router, TypeScript, Tailwind CSS v4)
+- Supabase JS client (client-side auth helper wired up in `src/lib/supabase.ts`)
+- shadcn/ui (Radix + Tailwind component primitives)
+- React Hook Form + Zod for type-safe forms with validation
 
-First, run the development server:
+The default page (`src/app/page.tsx`) shows how these tools work together to
+create a Supabase email sign-up flow with shadcn/ui components.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Local setup
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Install dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Create `.env.local` in the project root and provide your Supabase project
+   credentials. You can find them in the Supabase dashboard under **Project
+   Settings → API**.
 
-## Learn More
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your-project-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   SUPABASE_URL=your-project-url # optional, falls back to NEXT_PUBLIC_SUPABASE_URL
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. Start the dev server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Visit [http://localhost:3000](http://localhost:3000) and use the sample form
+   to create Supabase auth users. Validation runs locally (Zod) before the form
+   data is sent to Supabase.
 
-## Deploy on Vercel
+## Project structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `src/app/layout.tsx` – global metadata + fonts.
+- `src/app/page.tsx` – example Supabase sign-up form using shadcn/ui + RHF + Zod.
+- `src/lib/supabase.ts` – Supabase browser client factory.
+- `src/lib/supabase-server.ts` – Supabase service-role client for API routes.
+- `src/app/api/ticket/route.ts` – POST endpoint to seed/create placeholder tickets.
+- `src/app/api/tickets/route.ts` – GET endpoint listing latest tickets from Supabase.
+- `src/app/api/ticket/reply/route.ts` – POST endpoint that enriches ticket replies.
+- `src/components/ui/*` – shadcn/ui component layer, ready for extension.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts
+
+- `npm run dev` – start the Next.js dev server.
+- `npm run build` – create a production build.
+- `npm start` – run the production build locally.
+- `npm run lint` – run ESLint.
